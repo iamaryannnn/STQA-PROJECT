@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AmbusWay Connect</title>
+  <style>
+    :root {
+      --bg-color-light: #f4f4f4;
+      --text-color-light: #333;
+      --card-color-light: #fff;
+
+      --bg-color-dark: #121212;
+      --text-color-dark: #f0f0f0;
+      --card-color-dark: #1e1e1e;
+
+      --accent-color: #d9534f;
+      --google-blue: #4285F4;
+      --online-green: #5cb85c;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: var(--bg-color-dark);
+      --text-color: var(--text-color-dark);
+      --card-color: var(--card-color-dark);
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .page {
+      display: none;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-content {
+      width: 100%;
+      max-width: 400px;
+      background-color: var(--card-color);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    h1, h2, p {
+      text-align: center;
+      color: var(--text-color);
+      margin-bottom: 20px;
+    }
+
+    select, input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      border: none;
+      background-color: var(--accent-color);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.9;
+      transform: scale(1.03);
+    }
+
+    .google-button {
+      background-color: var(--google-blue);
+    }
+
+    .services-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .nearby-hospitals, .recent-activity {
+      width: 100%;
+    }
+
+    #map {
+      width: 100%;
+      height: 250px;
+      background-color: #ddd;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .ambulance-details img {
+      display: block;
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 0 auto 10px auto;
+    }
+
+    .ambulance-details p {
+      text-align: center;
+      margin: 5px 0;
+    }
+
+    .status button {
+      background-color: var(--online-green);
+    }
+
+    @media (min-width: 768px) {
+      .services-container {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .nearby-hospitals, .recent-activity {
+        width: 48%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Page -->
+  <div id="login-page" class="page">
+    <div class="page-content">
+      <h1>AmbusWay Connect</h1>
+      <select id="user-type-login">
+        <option value="user">User</option>
+        <option value="driver">Ambulance Driver</option>
+      </select>
+      <form id="login-form">
+        <input type="email" placeholder="Email" value="aryanmahmadi1000@gmail.com">
+        <input type="password" placeholder="Password">
+        <button type="submit">Sign In</button>
+      </form>
+      <button class="nav-button" onclick="navigateTo('signup-page')">Sign Up</button>
+    </div>
+  </div>
+
+  <!-- Sign Up Page -->
+  <div id="signup-page" class="page">
+    <div class="page-content">
+      <h1>Sign Up</h1>
+      <select id="user-type-signup">
+        <option value="user">User</option>
+        <option value="driver">Ambulance Driver</option>
+      </select>
+      <form id="signup-form">
+        <input type="text" placeholder="Full Name">
+        <input type="email" placeholder="Email">
+        <input type="password" placeholder="Password">
+        <button type="submit">Sign Up</button>
+      </form>
+      <button class="google-button">Sign Up with Google</button>
+      <button class="nav-button" onclick="navigateTo('login-page')">Back to Login</button>
+    </div>
+  </div>
+
+  <!-- Emergency Services Page -->
+  <div id="emergency-services" class="page">
+    <div class="page-content">
+      <h1>Emergency Services</h1>
+      <button id="request-ambulance">Request Ambulance Now</button>
+      <div class="services-container">
+        <div class="nearby-hospitals">
+          <h2>Nearby Hospitals</h2>
+          <select>
+            <option>City Hospital</option>
+            <option>General Hospital</option>
+            <option>Medical Center</option>
+          </select>
+        </div>
+        <div class="recent-activity">
+          <h2>Recent Activity</h2>
+          <p>No recent activities</p>
+        </div>
+      </div>
+      <button class="nav-button" onclick="navigateTo('login-page')">Back to Login</button>
+    </div>
+  </div>
+
+  <!-- Ambulance Tracking Page -->
+  <div id="ambulance-tracking" class="page">
+    <div class="page-content">
+      <h1>Ambulance Tracking</h1>
+      <div id="map">
+        <img src="path/to/map-image.jpg" alt="Map" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div class="ambulance-details">
+        <img src="john doe.jpeg" alt="Akash Raghuvanshi">
+        <p><strong>Driver: Akash Raghuvanshi</strong></p>
+        <p>Contact: 123-456-7890</p>
+        <p>ETA: 15 minutes</p>
+        <button>Call Driver</button>
+        <button>Cancel Request</button>
+      </div>
+      <button class="nav-button" onclick="navigateTo('login-page')">Back to Login</button>
+    </div>
+  </div>
+
+  <!-- Driver Dashboard -->
+  <div id="driver-dashboard" class="page">
+    <div class="page-content">
+      <h1>Driver Dashboard</h1>
+      <div class="status">
+        <button id="go-online">Go Online</button>
+      </div>
+      <div class="requests">
+        <h2>Recent Requests</h2>
+        <p>No active requests</p>
+      </div>
+      <div class="statistics">
+        <h2>Today's Statistics</h2>
+        <p>Total Trips: 0</p>
+        <p>Hours Online: 0</p>
+      </div>
+      <button class="nav-button" onclick="navigateTo('login-page')">Back to Login</button>
+    </div>
+  </div>
+
+  <script>
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+      document.getElementById(pageId).style.display = 'flex';
+      history.pushState({ page: pageId }, '', `#${pageId}`);
+    }
+
+    window.addEventListener('popstate', e => {
+      if (e.state && e.state.page) {
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        document.getElementById(e.state.page).style.display = 'flex';
+      }
+    });
+
+    window.addEventListener('load', () => {
+      const page = location.hash.replace('#', '') || 'login-page';
+      navigateTo(page);
+    });
+
+    document.getElementById('login-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const userType = document.getElementById('user-type-login').value;
+      navigateTo(userType === 'user' ? 'emergency-services' : 'driver-dashboard');
+    });
+
+    document.getElementById('signup-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const userType = document.getElementById('user-type-signup').value;
+      navigateTo(userType === 'user' ? 'emergency-services' : 'driver-dashboard');
+    });
+
+    document.getElementById('request-ambulance').addEventListener('click', () => {
+      navigateTo('ambulance-tracking');
+    });
+
+    document.getElementById('go-online').addEventListener('click', function () {
+      if (this.textContent === 'Go Online') {
+        this.textContent = 'Go Offline';
+        this.style.backgroundColor = '#d9534f';
+        alert('You are now online.');
+      } else {
+        this.textContent = 'Go Online';
+        this.style.backgroundColor = '#5cb85c';
+        alert('You are now offline.');
+      }
+    });
+  </script>
+</body>
+</html>
